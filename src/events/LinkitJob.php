@@ -10,7 +10,7 @@ class LinkitJob
     public $service;
     public $destinations;
     public $cancelled;
-    public $extras;
+    public $extra;
     public $clients;
     public $reference_id;
     public $phone_number;

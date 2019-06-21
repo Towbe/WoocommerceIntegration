@@ -4,3 +4,5 @@ run:
 pack:
 	cd src && zip -r ../LinkitWoocommerce.zip *
 
+clean:
+	rm LinkitWoocommerce.zip

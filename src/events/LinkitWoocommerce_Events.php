@@ -103,7 +103,17 @@ class LinkitWoocommerce_Events
                 );
 
                 try {
-                    $res["image"] = wp_get_attachment_url(wc_get_product($id)->get_gallery_image_ids[0]);
+                    $product = wc_get_product($id);
+                    if ($product !== false && $product !== null) {
+                        $images = $product->get_gallery_image_ids();
+                        $imageurls = array();
+                        for ($i = 0; $i < count($images); $i++) {
+                            array_push($imageurls,wp_get_attachment_url($images[0]));
+                        }
+                        $res["image_uris"] = $imageurls;
+                    } else {
+                        error_log("Product with id " . $id . " does not exist");
+                    }
                 } catch (Exception $e) {
                     error_log($e);
                 }
@@ -120,7 +130,7 @@ class LinkitWoocommerce_Events
             }
         });
 
-        $job->extras = array(
+        $job->extra = array(
             "parcels" => $linkit_items,
         );
 
