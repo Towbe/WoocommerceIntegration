@@ -5,4 +5,6 @@ class Destination
 {
     public $address;
     public $location;
+    public $parcels;
+    public $client_uid;
 }

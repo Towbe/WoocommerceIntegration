@@ -1,6 +1,6 @@
 FROM wordpress:php7.3
-
-RUN apt-get update && apt-get install -y wget zip && apt-get clean
+RUN sed -i '/buster-updates/d' /etc/apt/sources.list
+RUN apt-get update --fix-missing && apt-get install -y wget zip && apt-get clean
 
 ENV WOOCOMMERCE_VERSION 3.6.4
 ENV STOREFRONT_VERSION 2.5.0

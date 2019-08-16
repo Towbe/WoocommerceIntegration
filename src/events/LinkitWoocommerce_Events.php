@@ -49,12 +49,14 @@ class LinkitWoocommerce_Events
     public function handle_completed_order($order_id)
     {
         $order = wc_get_order($order_id);
-
+            
         $store_destination = new Destination();
+        $store_destination->type = "pickup";
         $store_destination->location = new LinkitLocation();
         $store_destination->address = get_option("linkit_store_address", "");
         $store_destination->location->lat = get_option("linkit_store_latitude", 0);
         $store_destination->location->lng = get_option('linkit_store_longitude', 0);
+        
 
         $client_destination = new Destination();
         $client_destination->location = new LinkitLocation();
@@ -98,8 +100,12 @@ class LinkitWoocommerce_Events
                 } else {
                     $field = $this->barcode_field;
                 }
+            
                 $res = array(
                     "product" => $item->get_name(),
+                    "label" => $item->get_product()->get_sku(),
+                    "type"=>$item->get_product()->get_categories();
+                    "quantity" => $item->get_quantity()
                 );
 
                 try {
@@ -129,10 +135,19 @@ class LinkitWoocommerce_Events
                 return true;
             }
         });
-
+        
+                
         $job->extra = array(
+            "expected_picking_time" => $order->get_meta("expected_picking_time")
+        );        
+
+        $client_destination->extra = array(
             "parcels" => $linkit_items,
+            "type" => "dropoff",
+            "client_uid" => $order->get_user_id()
         );
+
+
 
         $id = $job->create();
 
