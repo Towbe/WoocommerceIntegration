@@ -23,6 +23,8 @@ class LinkitWoocommerce_Events
     {
         switch ($new_status) {
             case 'completed':
+
+                echo "jajaja";
                 $this->handle_completed_order($order_id);
                 break;
 
@@ -32,6 +34,10 @@ class LinkitWoocommerce_Events
                 $this->handle_cancelled_order($order_id);
         }
     }
+
+  
+
+    
 
     public function handle_cancelled_order($order_id)
     {
@@ -48,8 +54,7 @@ class LinkitWoocommerce_Events
 
     public function handle_completed_order($order_id)
     {
-        $order = wc_get_order($order_id);
-            
+        $order = wc_get_order($order_id);      
         $store_destination = new Destination();
         $store_destination->type = "pickup";
         $store_destination->location = new LinkitLocation();
@@ -100,29 +105,35 @@ class LinkitWoocommerce_Events
                 } else {
                     $field = $this->barcode_field;
                 }
-            
-                $res = array(
-                    "product" => $item->get_name(),
-                    "label" => $item->get_product()->get_sku(),
-                    "type"=>$item->get_product()->get_categories();
-                    "quantity" => $item->get_quantity()
-                );
-
+                
+                $product = $item->get_product();
+               
+                $imageurls = array();
                 try {
-                    $product = wc_get_product($id);
+                    $product = $item->get_product();
                     if ($product !== false && $product !== null) {
+                        
                         $images = $product->get_gallery_image_ids();
-                        $imageurls = array();
+                        
                         for ($i = 0; $i < count($images); $i++) {
-                            array_push($imageurls,wp_get_attachment_url($images[0]));
+                   
+                            array_push($imageurls,wp_get_attachment_image_src($images[0]));
                         }
-                        $res["image_uris"] = $imageurls;
+                      
                     } else {
                         error_log("Product with id " . $id . " does not exist");
                     }
                 } catch (Exception $e) {
                     error_log($e);
                 }
+
+                $res = array(
+                    "product" => $item->get_name(),
+                    "label" => $product ->get_sku(),
+                    "type"=> wc_get_product_category_list($product->get_id()),
+                    "quantity" => $item->get_quantity(),
+                    "image_uris" => $imageurls
+                );
 
                 if ($field !== '') {
                     $res['label'] = $item->get_meta($field);
@@ -138,9 +149,17 @@ class LinkitWoocommerce_Events
         
                 
         $job->extra = array(
-            "expected_picking_time" => $order->get_meta("expected_picking_time")
+            "expected_picking_time" => $order->get_meta("expected_picking_time"),
+            "pickedStatus" => "Not Processed",
+            "picker_job" => true,
         );        
+        
 
+        $job->organization = "Test Org";
+        $job->dispatching_organization = "Test Org";
+        $job->driver_uid = "93Ps9uN3CzR6RFhUNzQ5RxZytMH2";
+        
+        
         $client_destination->extra = array(
             "parcels" => $linkit_items,
             "type" => "dropoff",

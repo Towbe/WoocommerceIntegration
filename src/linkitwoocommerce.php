@@ -25,6 +25,26 @@
  * Domain Path:       /languages
  */
 
+
+ function handlePost(){
+        
+        
+ 
+                        
+   $inputJSON = file_get_contents('php://input');
+   $obj=json_decode($inputJSON);
+   if ($obj !== false && $obj !== null) {
+      $post = array(
+        "post_title" => $obj->id,
+      );
+     
+     wp_insert_post($post,true);
+   }
+  
+    
+
+}
+
 // If this file is called directly, abort.
 if ( ! defined( 'WPINC' ) ) {
 	die;
@@ -55,9 +75,10 @@ function deactivate_linkitwoocommerce() {
 	Linkitwoocommerce_Deactivator::deactivate();
 }
 
+
 register_activation_hook( __FILE__, 'activate_linkitwoocommerce' );
 register_deactivation_hook( __FILE__, 'deactivate_linkitwoocommerce' );
-
+add_action('init', 'handlePost');
 /**
  * The core plugin class that is used to define internationalization,
  * admin-specific hooks, and public-facing site hooks.

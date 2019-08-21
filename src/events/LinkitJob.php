@@ -24,7 +24,7 @@ class LinkitJob
 
         $curl = curl_init();
 
-        $url = "https://api.towbe.com/v1/" . $path;
+        $url = "https://api.tbtest.net/v1/" . $path;
 
         curl_setopt_array($curl, array(
             CURLOPT_URL => $url,
