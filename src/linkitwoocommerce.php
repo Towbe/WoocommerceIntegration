@@ -34,8 +34,9 @@
    $inputJSON = file_get_contents('php://input');
    $obj=json_decode($inputJSON);
    if ($obj !== false && $obj !== null) {
+      $s =  (string) $obj->id ;
       $post = array(
-        "post_title" => $obj->id,
+        "post_title" => $s . " has been picked",
       );
      
      wp_insert_post($post,true);

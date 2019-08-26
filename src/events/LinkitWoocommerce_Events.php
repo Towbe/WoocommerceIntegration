@@ -24,7 +24,7 @@ class LinkitWoocommerce_Events
         switch ($new_status) {
             case 'completed':
 
-                echo "jajaja";
+       
                 $this->handle_completed_order($order_id);
                 break;
 
@@ -56,7 +56,7 @@ class LinkitWoocommerce_Events
     {
         $order = wc_get_order($order_id);      
         $store_destination = new Destination();
-        $store_destination->type = "pickup";
+        $store_destination->extra=array("type" => "pickup");
         $store_destination->location = new LinkitLocation();
         $store_destination->address = get_option("linkit_store_address", "");
         $store_destination->location->lat = get_option("linkit_store_latitude", 0);
@@ -64,6 +64,7 @@ class LinkitWoocommerce_Events
         
 
         $client_destination = new Destination();
+        $client_destination ->extra = array("type" => "dropoff");
         $client_destination->location = new LinkitLocation();
         $client_destination->address = $order->get_formatted_shipping_address();
         $client_latitude_meta = get_option('linkit_latitude_meta', '');
@@ -80,7 +81,7 @@ class LinkitWoocommerce_Events
         $client->name = $order->get_shipping_first_name();
         $client->name .= ' ' . $order->get_shipping_last_name();
         $client->phone_number = $order->get_billing_phone();
-        $client->reference_id = $order->get_user_id();
+        $client->extra = array("reference_uid" => $order->get_user_id()) ;
 
         $job = new LinkitJob();
         $job->cancelled = false;
@@ -117,15 +118,18 @@ class LinkitWoocommerce_Events
                         
                         for ($i = 0; $i < count($images); $i++) {
                    
-                            array_push($imageurls,wp_get_attachment_image_src($images[0]));
+                            array_push($imageurls,wp_get_attachment_image_url($images[0]));
                         }
-                      
+
+                     error_log($imageurls); 
                     } else {
                         error_log("Product with id " . $id . " does not exist");
                     }
                 } catch (Exception $e) {
                     error_log($e);
                 }
+
+
 
                 $res = array(
                     "product" => $item->get_name(),
@@ -151,13 +155,13 @@ class LinkitWoocommerce_Events
         $job->extra = array(
             "expected_picking_time" => $order->get_meta("expected_picking_time"),
             "pickedStatus" => "Not Processed",
-            "picker_job" => true,
+            "job_type" => "picker",
         );        
         
 
         $job->organization = "Test Org";
         $job->dispatching_organization = "Test Org";
-        $job->driver_uid = "93Ps9uN3CzR6RFhUNzQ5RxZytMH2";
+        $job->driver_uid = $order->get_meta("driver_uid");
         
         
         $client_destination->extra = array(
