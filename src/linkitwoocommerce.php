@@ -27,10 +27,10 @@
 
 
  function handlePost(){
-        
-        
- 
-                        
+
+
+
+
    $inputJSON = file_get_contents('php://input');
    $obj=json_decode($inputJSON);
    if ($obj !== false && $obj !== null) {
@@ -38,11 +38,11 @@
       $post = array(
         "post_title" => $s . " has been picked",
       );
-     
+
      wp_insert_post($post,true);
    }
-  
-    
+
+
 
 }
 
@@ -56,7 +56,7 @@ if ( ! defined( 'WPINC' ) ) {
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-define( 'LINKITWOOCOMMERCE_VERSION', '1.0.0' );
+define( 'LINKITWOOCOMMERCE_VERSION', '1.1.0' );
 
 /**
  * The code that runs during plugin activation.
