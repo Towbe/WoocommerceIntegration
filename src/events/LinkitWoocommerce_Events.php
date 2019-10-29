@@ -55,6 +55,10 @@ class LinkitWoocommerce_Events
 
     }
 
+
+
+
+
     public function handle_cancelled_order($order_id)
     {
         $id = (string)get_post_meta($order_id, 'linkit_job_id', true);
@@ -71,14 +75,16 @@ class LinkitWoocommerce_Events
     public function handle_dispatch_order($order_id, $service='')
     {
         $order = wc_get_order($order_id);
-
         $store_destination = new Destination();
+        $store_destination->extra=array("type" => "pickup");
         $store_destination->location = new LinkitLocation();
         $store_destination->address = get_option("linkit_store_address", "");
         $store_destination->location->lat = get_option("linkit_store_latitude", 0);
         $store_destination->location->lng = get_option('linkit_store_longitude', 0);
 
+
         $client_destination = new Destination();
+        $client_destination ->extra = array("type" => "dropoff");
         $client_destination->location = new LinkitLocation();
         $client_destination->address = $order->get_formatted_shipping_address();
         $client_latitude_meta = get_option('linkit_latitude_meta', '');
@@ -95,14 +101,10 @@ class LinkitWoocommerce_Events
         $client->name = $order->get_shipping_first_name();
         $client->name .= ' ' . $order->get_shipping_last_name();
         $client->phone_number = $order->get_billing_phone();
-        $client->reference_id = $order->get_user_id();
+        $client->extra = array("reference_uid" => $order->get_user_id()) ;
 
         $job = new LinkitJob();
         $job->cancelled = false;
-        $job->destinations = array(
-            0 => $store_destination,
-            1 => $client_destination,
-        );
         $job->reference_id = (string)$order_id;
         $job->clients = array(
             0 => $client,
@@ -131,25 +133,38 @@ class LinkitWoocommerce_Events
                 } else {
                     $field = $this->barcode_field;
                 }
-                $res = array(
-                    "product" => $item->get_name(),
-                );
 
+                $product = $item->get_product();
+
+                $imageurls = array();
                 try {
-                    $product = wc_get_product($id);
+                    $product = $item->get_product();
                     if ($product !== false && $product !== null) {
+
                         $images = $product->get_gallery_image_ids();
-                        $imageurls = array();
+
                         for ($i = 0; $i < count($images); $i++) {
-                            array_push($imageurls,wp_get_attachment_url($images[0]));
+
+                            array_push($imageurls,wp_get_attachment_image_url($images[0]));
                         }
-                        $res["image_uris"] = $imageurls;
+
+                     error_log($imageurls);
                     } else {
                         error_log("Product with id " . $id . " does not exist");
                     }
                 } catch (Exception $e) {
                     error_log($e);
                 }
+
+
+
+                $res = array(
+                    "product" => $item->get_name(),
+                    "label" => $product ->get_sku(),
+                    "type"=> wc_get_product_category_list($product->get_id()),
+                    "quantity" => $item->get_quantity(),
+                    "image_uris" => $imageurls
+                );
 
                 if ($field !== '') {
                     $res['label'] = $item->get_meta($field);
@@ -163,9 +178,30 @@ class LinkitWoocommerce_Events
             }
         });
 
+
         $job->extra = array(
-            "parcels" => $linkit_items,
+            "expected_picking_time" => $order->get_meta("expected_picking_time"),
+            "pickedStatus" => "Not Processed",
+            "job_type" => "picker",
             "woocommerce_order_id" => $order_id,
+        );
+
+
+        $job->organization = "Test Org";
+        $job->dispatching_organization = "Test Org";
+        $job->driver_uid = $order->get_meta("driver_uid");
+
+
+        $client_destination->extra = array(
+            "parcels" => $linkit_items,
+            "type" => "dropoff",
+            "client_uid" => $order->get_user_id(),
+        );
+
+        $job->destinations = array(
+            0 => $store_destination,
+            1 => $client_destination,
+            0 => $store_destination,
         );
 
         $id = $job->create();

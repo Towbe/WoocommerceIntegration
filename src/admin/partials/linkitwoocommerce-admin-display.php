@@ -62,7 +62,7 @@
                 <input
                         type="text"
                         name="linkit_job_type_meta"
-                        id="latitude-meta"
+                        id="job-type-meta"
                         value="<?php echo esc_attr( get_option('linkit_job_type_meta')) ?>"
                 />
             </li>
@@ -82,12 +82,42 @@
                 </select>
             </li>
             <li>
+
+                <label for="linkit_next_step">Step After Picker</label>
+                <select id="linkit_next_step" name="linkit_next_step" >
+                    <?php
+                    for ($i = 0; $i < sizeof($orderStatusesKeys); $i++) {
+                        ?>
+                        <option value="<?php echo $orderStatusesKeys[$i] ?>" <?php echo esc_attr( get_option('linkit_next_step')) == $orderStatusesKeys[$i] ? 'selected' : '' ?>>
+                            <?php echo $orderStatuses[$orderStatusesKeys[$i]] ?>
+                        </option>
+                        <?php
+                    }
+                    ?>
+                </select>
+            </li>
+            <li>
                 <label for="send-driver">Driver stage</label>
                 <select id="send-driver" name="linkit_send_driver" >
                     <?php
                     for ($i = 0; $i < sizeof($orderStatusesKeys); $i++) {
                         ?>
                         <option value="<?php echo $orderStatusesKeys[$i] ?>" <?php echo esc_attr( get_option('linkit_send_driver')) == $orderStatusesKeys[$i] ? 'selected' : '' ?>>
+                            <?php echo $orderStatuses[$orderStatusesKeys[$i]] ?>
+                        </option>
+                        <?php
+                    }
+                    ?>
+                </select>
+            </li>
+            <li>
+
+                <label for="linkit_next_step_delivery">Step After Delivery</label>
+                <select id="linkit_next_step_delivery" name="linkit_next_step_delivery" >
+                    <?php
+                    for ($i = 0; $i < sizeof($orderStatusesKeys); $i++) {
+                        ?>
+                        <option value="<?php echo $orderStatusesKeys[$i] ?>" <?php echo esc_attr( get_option('linkit_next_step_delivery')) == $orderStatusesKeys[$i] ? 'selected' : '' ?>>
                             <?php echo $orderStatuses[$orderStatusesKeys[$i]] ?>
                         </option>
                         <?php

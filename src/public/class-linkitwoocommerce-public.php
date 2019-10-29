@@ -77,6 +77,54 @@ class Linkitwoocommerce_Public {
 
 	}
 
+    /**
+     * Tell wordpress what are the apis that can be accessed for this plugin
+     *
+     * @since 1.1.0
+     */
+    public function register_api() {
+        register_rest_route('linkit/v1', '/next-step/(?P<id>\d+)', array(
+            'methods' => 'GET',
+            'callback' => array($this, 'handle_next_step'),
+        ));
+        register_rest_route('linkit/v1', '/next-step-delivery/(?P<id>\d+)', array(
+            'methods' => 'GET',
+            'callback' => array($this, 'handle_next_step_delivery'),
+        ));
+    }
+
+    /**
+     * Hop to the next state of the order as per the configuration
+     *
+     * @since 1.1.0
+     */
+    public function handle_next_step($data) {
+        $finish = get_option('linkit_next_step');
+        $order = wc_get_order($data['id']);
+
+        if ( empty($order) ) {
+            return;
+        }
+
+        $order->update_status($finish);
+    }
+
+    /**
+     * Hop to the next state of the order as per the configuration
+     *
+     * @since 1.1.0
+     */
+    public function handle_next_step_delivery($data) {
+        $finish = get_option('linkit_next_step_delivery');
+        $order = wc_get_order($data['id']);
+
+        if ( empty($order) ) {
+            return;
+        }
+
+        $order->update_status($finish);
+    }
+
 	/**
 	 * Register the JavaScript for the public-facing side of the site.
 	 *
