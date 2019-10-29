@@ -21,16 +21,38 @@ class LinkitWoocommerce_Events
 
     public function on_order_status_changed($order_id, $old_status, $new_status)
     {
-        switch ($new_status) {
-            case 'completed':
-                $this->handle_completed_order($order_id);
-                break;
+        $send_picker = get_option('linkit_send_picker');
+        $send_driver = get_option('linkit_send_driver');
+        $cancel = get_option('linkit_cancel');
+        $finish = get_option('linkit_finish');
 
-            case 'cancelled':
-            case 'failed':
-            case 'on-hold':
-                $this->handle_cancelled_order($order_id);
+        if (strpos($send_picker, $new_status) !== false) {
+            $this->handle_dispatch_order($order_id, 'Picker');
+            return;
         }
+        if (strpos($send_driver, $new_status) !== false) {
+            $this->handle_dispatch_order($order_id);
+
+            return;
+        }
+        if (strpos($cancel, $new_status) !== false) {
+            $this->handle_cancelled_order($order_id);
+            return;
+        }
+        if (strpos($finish, $new_status) !== false) {
+            $this->handle_finish_order($order_id);
+            return;
+        }
+    }
+
+    public function handle_send_to_picker($order_id)
+    {
+
+    }
+
+    public function handle_send_to_driver($order_id)
+    {
+
     }
 
     public function handle_cancelled_order($order_id)
@@ -46,7 +68,7 @@ class LinkitWoocommerce_Events
         $job->cancel();
     }
 
-    public function handle_completed_order($order_id)
+    public function handle_dispatch_order($order_id, $service='')
     {
         $order = wc_get_order($order_id);
 
@@ -86,7 +108,18 @@ class LinkitWoocommerce_Events
             0 => $client,
         );
         $job->phone_number = $client->phone_number;
-        $job->service = "Fast Store Request";
+
+
+        if ($service === '') {
+            $job_type_meta = get_option('linkit_job_type_meta', '');
+            if ($job_type_meta === '') {
+                $job->service = 'Fast Store Request';
+            }  else {
+                $job->service = $order->get_meta($job_type_meta);
+            }
+        } else {
+            $job->service = $service;
+        }
 
         $items = $order->get_items();
         $linkit_items = array();
@@ -132,10 +165,23 @@ class LinkitWoocommerce_Events
 
         $job->extra = array(
             "parcels" => $linkit_items,
+            "woocommerce_order_id" => $order_id,
         );
 
         $id = $job->create();
 
         update_post_meta($order_id, 'linkit_job_id', $id);
+    }
+
+    public function handle_finish_order($order_id) {
+        $id = (string)get_post_meta($order_id, 'linkit_job_id', true);
+        if (strlen($id) == 0) {
+            error_log("Could not finish the order " . $order_id . " because it's job id is not defined");
+            return;
+        }
+
+        $job = new LinkitJob();
+        $job->id = $id;
+        $job->finish();
     }
 }

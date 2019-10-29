@@ -126,6 +126,11 @@ class Linkitwoocommerce_Admin {
         register_setting('LinkIt', 'linkit_api_key');
         register_setting('LinkIt', 'linkit_latitude_meta');
         register_setting('LinkIt', 'linkit_longitude_meta');
+        register_setting('LinkIt', 'linkit_job_type_meta');
+        register_setting('LinkIt', 'linkit_send_picker');
+        register_setting('LinkIt', 'linkit_send_driver');
+        register_setting('LinkIt', 'linkit_cancel');
+        register_setting('LinkIt', 'linkit_finish');
     }
 
     /**

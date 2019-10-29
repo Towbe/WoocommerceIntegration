@@ -52,14 +52,76 @@
                         value="<?php echo esc_attr( get_option('linkit_longitude_meta')) ?>"
                 />
             </li>
+            <h3>LinkIt App Value Mapping</h3>
+            <?php
+                $orderStatuses = wc_get_order_statuses();
+                $orderStatusesKeys = array_keys($orderStatuses);
+            ?>
             <li>
-                <label for="geohash-meta">Client Geohash Meta</label>
+                <label for="job-type-meta">Job Type Meta</label>
                 <input
                         type="text"
-                        name="linkit_geohash_meta"
-                        id="geohash-meta"
-                        value="<?php echo esc_attr( get_option('linkit_geohash_meta')) ?>"
+                        name="linkit_job_type_meta"
+                        id="latitude-meta"
+                        value="<?php echo esc_attr( get_option('linkit_job_type_meta')) ?>"
                 />
+            </li>
+
+            <li>
+                <label for="send-picker">Picker stage</label>
+                <select id="send-picker" name="linkit_send_picker" >
+                    <?php
+                    for ($i = 0; $i < sizeof($orderStatusesKeys); $i++) {
+                        ?>
+                        <option value="<?php echo $orderStatusesKeys[$i] ?>" <?php echo esc_attr( get_option('linkit_send_picker')) == $orderStatusesKeys[$i] ? 'selected' : '' ?>>
+                            <?php echo $orderStatuses[$orderStatusesKeys[$i]] ?>
+                        </option>
+                        <?php
+                    }
+                    ?>
+                </select>
+            </li>
+            <li>
+                <label for="send-driver">Driver stage</label>
+                <select id="send-driver" name="linkit_send_driver" >
+                    <?php
+                    for ($i = 0; $i < sizeof($orderStatusesKeys); $i++) {
+                        ?>
+                        <option value="<?php echo $orderStatusesKeys[$i] ?>" <?php echo esc_attr( get_option('linkit_send_driver')) == $orderStatusesKeys[$i] ? 'selected' : '' ?>>
+                            <?php echo $orderStatuses[$orderStatusesKeys[$i]] ?>
+                        </option>
+                        <?php
+                    }
+                    ?>
+                </select>
+            </li>
+            <li>
+                <label for="cancel">Cancel Job</label>
+                <select id="cancel" name="linkit_cancel" >
+                    <?php
+                    for ($i = 0; $i < sizeof($orderStatusesKeys); $i++) {
+                        ?>
+                        <option value="<?php echo $orderStatusesKeys[$i] ?>" <?php echo esc_attr( get_option('linkit_cancel')) == $orderStatusesKeys[$i] ? 'selected' : '' ?>>
+                            <?php echo $orderStatuses[$orderStatusesKeys[$i]] ?>
+                        </option>
+                        <?php
+                    }
+                    ?>
+                </select>
+            </li>
+            <li>
+                <label for="finish">Finish Job</label>
+                <select id="finish" name="linkit_finish" >
+                    <?php
+                    for ($i = 0; $i < sizeof($orderStatusesKeys); $i++) {
+                        ?>
+                        <option value="<?php echo $orderStatusesKeys[$i] ?>" <?php echo esc_attr( get_option('linkit_finish')) == $orderStatusesKeys[$i] ? 'selected' : '' ?>>
+                            <?php echo $orderStatuses[$orderStatusesKeys[$i]] ?>
+                        </option>
+                        <?php
+                    }
+                    ?>
+                </select>
             </li>
             <li>
                 <?php submit_button(); ?>
