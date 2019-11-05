@@ -56,7 +56,7 @@ if ( ! defined( 'WPINC' ) ) {
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-define( 'LINKITWOOCOMMERCE_VERSION', '1.1.0' );
+define( 'LINKITWOOCOMMERCE_VERSION', '1.1.3' );
 
 /**
  * The code that runs during plugin activation.
@@ -75,7 +75,6 @@ function deactivate_linkitwoocommerce() {
 	require_once plugin_dir_path( __FILE__ ) . 'includes/class-linkitwoocommerce-deactivator.php';
 	Linkitwoocommerce_Deactivator::deactivate();
 }
-
 
 register_activation_hook( __FILE__, 'activate_linkitwoocommerce' );
 register_deactivation_hook( __FILE__, 'deactivate_linkitwoocommerce' );

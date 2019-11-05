@@ -22,33 +22,18 @@ class LinkitJob
             return null;
         }
 
-        $curl = curl_init();
-
         $url = "https://api.tbtest.net/v1/" . $path;
 
-        curl_setopt_array($curl, array(
-            CURLOPT_URL => $url,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => "",
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 30,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => $method,
-            CURLOPT_POSTFIELDS => $data,
-            CURLOPT_HTTPHEADER => array(
-                "Authorization: " . $api_key,
-                "Cache-Control: no-cache",
-                "Content-Type: application/json",
+        $response = wp_remote_post ($url, array(
+            'method' => $method,
+            'timeout' => 30,
+            'headers' => array(
+                "Authorization" => $api_key,
+                "Cache-Control" => "no-cache",
+                "Content-Type" => "application/json",
             ),
+            'body' => $data,
         ));
-
-        $response = curl_exec($curl);
-        $err = curl_error($curl);
-
-        if ($err) {
-            error_log($err);
-            return null;
-        }
 
         return $response;
     }
@@ -56,9 +41,13 @@ class LinkitJob
     public function create() {
         $serialized = $this->json_serialize();
         $result = $this->send_request("job-request", "PUT", $serialized);
+
         if ($result !== null) {
-            return json_decode($result)->id;
+            return json_decode($result['body'])->id;
+        } else {
+            return json_encode($result);
         }
+
         return '';
     }
 
@@ -66,12 +55,14 @@ class LinkitJob
         $result = $this->send_request("company/jobs/cancel", "POST", json_encode(array(
             "id" => $this->id,
         )));
+        error_log(json_encode($result));
     }
 
     public function finish() {
         $result = $this->send_request("job-request/finish", "POST", json_encode(array(
             "id" => $this->id,
         )));
+        error_log(json_encode($result));
     }
 
     private function json_serialize() {

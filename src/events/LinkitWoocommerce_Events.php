@@ -45,20 +45,6 @@ class LinkitWoocommerce_Events
         }
     }
 
-    public function handle_send_to_picker($order_id)
-    {
-
-    }
-
-    public function handle_send_to_driver($order_id)
-    {
-
-    }
-
-
-
-
-
     public function handle_cancelled_order($order_id)
     {
         $id = (string)get_post_meta($order_id, 'linkit_job_id', true);
@@ -111,7 +97,6 @@ class LinkitWoocommerce_Events
         );
         $job->phone_number = $client->phone_number;
 
-
         if ($service === '') {
             $job_type_meta = get_option('linkit_job_type_meta', '');
             if ($job_type_meta === '') {
@@ -148,7 +133,6 @@ class LinkitWoocommerce_Events
                             array_push($imageurls,wp_get_attachment_image_url($images[0]));
                         }
 
-                     error_log($imageurls);
                     } else {
                         error_log("Product with id " . $id . " does not exist");
                     }
@@ -170,14 +154,11 @@ class LinkitWoocommerce_Events
                     $res['label'] = $item->get_meta($field);
                 }
 
-                print_r($res);
-
                 array_push($linkit_items, $res);
 
                 return true;
             }
         });
-
 
         $job->extra = array(
             "expected_picking_time" => $order->get_meta("expected_picking_time"),
@@ -198,10 +179,11 @@ class LinkitWoocommerce_Events
             "client_uid" => $order->get_user_id(),
         );
 
+
         $job->destinations = array(
             0 => $store_destination,
             1 => $client_destination,
-            0 => $store_destination,
+            2 => $store_destination,
         );
 
         $id = $job->create();
