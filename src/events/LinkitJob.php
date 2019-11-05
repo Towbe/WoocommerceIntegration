@@ -22,7 +22,7 @@ class LinkitJob
             return null;
         }
 
-        $url = "https://api.tbtest.net/v1/" . $path;
+        $url = "https://api.towbe.com/v1/" . $path;
 
         $response = wp_remote_post ($url, array(
             'method' => $method,
