@@ -7,4 +7,5 @@ class Destination
     public $location;
     public $parcels;
     public $client_uid;
+    public $extra;
 }

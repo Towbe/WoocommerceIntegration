@@ -67,7 +67,16 @@ class LinkitWoocommerce_Events
         $store_destination->address = get_option("linkit_store_address", "");
         $store_destination->location->lat = get_option("linkit_store_latitude", 0);
         $store_destination->location->lng = get_option('linkit_store_longitude', 0);
+        $store_destination->extra = array(
+            "hide_map" => true,
+        );
 
+        $store_destination_2 = new Destination();
+        $store_destination_2->extra=array("type" => "pickup");
+        $store_destination_2->location = new LinkitLocation();
+        $store_destination_2->address = get_option("linkit_store_address", "");
+        $store_destination_2->location->lat = get_option("linkit_store_latitude", 0);
+        $store_destination_2->location->lng = get_option('linkit_store_longitude', 0);
 
         $client_destination = new Destination();
         $client_destination ->extra = array("type" => "dropoff");
@@ -172,7 +181,6 @@ class LinkitWoocommerce_Events
         $job->dispatching_organization = "Test Org";
         $job->driver_uid = $order->get_meta("driver_uid");
 
-
         $client_destination->extra = array(
             "parcels" => $linkit_items,
             "type" => "dropoff",
@@ -180,10 +188,11 @@ class LinkitWoocommerce_Events
         );
 
 
+
         $job->destinations = array(
             0 => $store_destination,
             1 => $client_destination,
-            2 => $store_destination,
+            2 => $store_destination_2,
         );
 
         $id = $job->create();
