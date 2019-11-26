@@ -15,12 +15,10 @@
  * @wordpress-plugin
  * Plugin Name:       Linkit Woocommerce
  * Plugin URI:        linkit.link
- * Description:       This is a short description of what the plugin does. It's displayed in the WordPress admin area.
- * Version:           1.0.0
+ * Description:       This plugin integrates with the LinkIt Dispatcher system
+ * Version:           1.2.1
  * Author:            LinkIt
  * Author URI:        linkit.link
- * License:           GPL-2.0+
- * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
  * Text Domain:       linkitwoocommerce
  * Domain Path:       /languages
  */
@@ -56,7 +54,7 @@ if ( ! defined( 'WPINC' ) ) {
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-define( 'LINKITWOOCOMMERCE_VERSION', '1.2.0' );
+define( 'LINKITWOOCOMMERCE_VERSION', '1.2.1' );
 
 /**
  * The code that runs during plugin activation.

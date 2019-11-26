@@ -14,6 +14,8 @@ class LinkitJob
     public $clients;
     public $reference_id;
     public $phone_number;
+    public $driver_uid;
+    public $job_number;
 
     private function send_request($path, $method, $data) {
         $api_key = get_option('linkit_api_key', "");
@@ -22,7 +24,7 @@ class LinkitJob
             return null;
         }
 
-        $url = "https://api.tbtest.net/v1/" . $path;
+        $url = "https://api.towbe.com/v1/" . $path;
 
         $response = wp_remote_post ($url, array(
             'method' => $method,
@@ -41,6 +43,11 @@ class LinkitJob
     public function create() {
         $serialized = $this->json_serialize();
         $result = $this->send_request("job-request", "PUT", $serialized);
+
+        if ($result instanceof WP_ERROR) {
+            error_log($result->get_error_message());
+            return '';
+        }
 
         if ($result !== null) {
             return json_decode($result['body'])->id;

@@ -12,3 +12,7 @@ RUN wget https://downloads.wordpress.org/plugin/woocommerce.${WOOCOMMERCE_VERSIO
 RUN wget https://downloads.wordpress.org/theme/storefront.${STOREFRONT_VERSION}.zip &&  \
     unzip storefront.${STOREFRONT_VERSION}.zip -d /usr/src/wordpress/wp-content/themes/ \
     && rm storefront.${STOREFRONT_VERSION}.zip
+
+RUN echo "define('WP_DEBUG_LOG', true);" >> wp-config.php
+RUN echo "define('WP_DEBUG_DISPLAY', true);" >> wp-config.php
+RUN echo "@ini_set('display_errors', 1);" >> wp-config.php

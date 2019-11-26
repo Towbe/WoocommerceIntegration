@@ -89,7 +89,7 @@ class LinkitWoocommerce_Events
         }
 
         if ($client_longitude_meta !== '') {
-            $client_destination->location->lat = (float)$order->get_meta($client_longitude_meta);
+            $client_destination->location->lng = (float)$order->get_meta($client_longitude_meta);
         }
 
         $client = new LinkitClient();
@@ -105,6 +105,7 @@ class LinkitWoocommerce_Events
             0 => $client,
         );
         $job->phone_number = $client->phone_number;
+        $job->job_number = (int)$order->get_order_number();
 
         if ($service === '') {
             $job_type_meta = get_option('linkit_job_type_meta', '');
@@ -149,14 +150,13 @@ class LinkitWoocommerce_Events
                     error_log($e);
                 }
 
-
-
                 $res = array(
                     "product" => $item->get_name(),
                     "label" => $product ->get_sku(),
                     "type"=> wc_get_product_category_list($product->get_id()),
                     "quantity" => $item->get_quantity(),
-                    "image_uris" => $imageurls
+                    "image_uris" => $imageurls,
+                    "barcode" => $product->get_meta('barcode_'),
                 );
 
                 if ($field !== '') {
@@ -176,24 +176,23 @@ class LinkitWoocommerce_Events
             "woocommerce_order_id" => $order_id,
         );
 
-
-        $job->organization = "Test Org";
-        $job->dispatching_organization = "Test Org";
-        $job->driver_uid = $order->get_meta("driver_uid");
-
         $client_destination->extra = array(
             "parcels" => $linkit_items,
             "type" => "dropoff",
             "client_uid" => $order->get_user_id(),
         );
 
-
-
         $job->destinations = array(
             0 => $store_destination,
             1 => $client_destination,
             2 => $store_destination_2,
         );
+
+        if ($service == 'Picker') {
+            $job->driver_uid = 'uIcwXT3xSRQnAlZclQCvuXNZFA52';
+        } else {
+            $job->driver_uid = 'cGHY0QsFGwMPM5hKVq8vSEJkVLg1';
+        }
 
         $id = $job->create();
 
