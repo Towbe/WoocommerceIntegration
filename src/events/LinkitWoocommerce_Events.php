@@ -105,7 +105,7 @@ class LinkitWoocommerce_Events
             0 => $client,
         );
         $job->phone_number = $client->phone_number;
-        $job->job_number = (int)$order->get_order_number();
+        $job->job_number = (int)preg_replace('/[^0-9]/', '', $order->get_order_number());
 
         if ($service === '') {
             $job_type_meta = get_option('linkit_job_type_meta', '');
@@ -132,13 +132,8 @@ class LinkitWoocommerce_Events
                     $product = $item->get_product();
                     if ($product !== false && $product !== null) {
 
-                        $images = $product->get_gallery_image_ids();
-
-                        for ($i = 0; $i < count($images); $i++) {
-
-                            array_push($imageurls,wp_get_attachment_image_url($images[0]));
-                        }
-
+                        $images = wp_get_attachment_image_url($product->get_image_id(), 'full');
+                        $imageurls = $images;
                     } else {
                         error_log("Product with id " . $id . " does not exist");
                     }
@@ -187,6 +182,19 @@ class LinkitWoocommerce_Events
             $job->driver_uid = 'uIcwXT3xSRQnAlZclQCvuXNZFA52';
         } else {
             $job->driver_uid = 'cGHY0QsFGwMPM5hKVq8vSEJkVLg1';
+            $stage = $order->get_meta('stage');
+//            if ($stage) {
+//                switch ($job->service) {
+//                    case 'Motorcycle':
+//                        switch ($stage):
+//                            case 0:
+//
+//                        break;
+//                    case 'Truck':
+//
+//                        break;
+//                }
+//            }
         }
 
         $id = $job->create();

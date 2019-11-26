@@ -45,6 +45,8 @@ class LinkitJob
         $serialized = $this->json_serialize();
         $result = $this->send_request("job-request", "PUT", $serialized);
 
+        error_log(json_encode($this));
+
         if ($result instanceof WP_ERROR) {
             error_log($result->get_error_message());
             return '';
