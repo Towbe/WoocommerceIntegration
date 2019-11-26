@@ -152,7 +152,6 @@ class LinkitWoocommerce_Events
                     "type"=> wc_get_product_category_list($product->get_id()),
                     "quantity" => $item->get_quantity(),
                     "image_uris" => $imageurls,
-                    "barcode" => $product->get_meta('barcode_'),
                 );
 
                 if ($barcode_field !== '') {

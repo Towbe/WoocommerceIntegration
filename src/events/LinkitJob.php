@@ -16,6 +16,7 @@ class LinkitJob
     public $phone_number;
     public $driver_uid;
     public $job_number;
+    public $schedule;
 
     private function send_request($path, $method, $data) {
         $api_key = get_option('linkit_api_key', "");
