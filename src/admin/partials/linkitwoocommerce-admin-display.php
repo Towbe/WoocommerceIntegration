@@ -58,6 +58,16 @@
                 $orderStatusesKeys = array_keys($orderStatuses);
             ?>
             <li>
+                <label for="barcode">Barcode Product Meta</label>
+
+                <input
+                        type="text"
+                        name="linkit_barcode_meta"
+                        id="barcode-meta"
+                        value="<?php echo esc_attr( get_option('linkit_barcode_meta')) ?>"
+                />
+            </li>
+            <li>
                 <label for="job-type-meta">Job Type Meta</label>
                 <input
                         type="text"

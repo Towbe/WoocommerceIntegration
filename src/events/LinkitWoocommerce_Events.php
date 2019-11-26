@@ -120,14 +120,10 @@ class LinkitWoocommerce_Events
 
         $items = $order->get_items();
         $linkit_items = array();
+
         array_walk($items, function ($item, $id) use (&$linkit_items) {
             {
-                $field = '';
-                if ($this->barcode_field === '') {
-                    $field = (string)get_option("linkit_barcode_field", "");
-                } else {
-                    $field = $this->barcode_field;
-                }
+                $barcode_field = $client_longitude_meta = get_option('linkit_barcode_meta', '');
 
                 $product = $item->get_product();
 
@@ -159,8 +155,8 @@ class LinkitWoocommerce_Events
                     "barcode" => $product->get_meta('barcode_'),
                 );
 
-                if ($field !== '') {
-                    $res['label'] = $item->get_meta($field);
+                if ($barcode_field !== '') {
+                    $res['label'] = $product->get_meta($barcode_field);
                 }
 
                 array_push($linkit_items, $res);
