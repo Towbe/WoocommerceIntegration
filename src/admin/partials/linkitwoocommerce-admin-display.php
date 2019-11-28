@@ -78,12 +78,26 @@
             </li>
 
             <li>
-                <label for="send-picker">Picker stage</label>
+                <label for="send-picker">Send To Picker</label>
                 <select id="send-picker" name="linkit_send_picker" >
                     <?php
                     for ($i = 0; $i < sizeof($orderStatusesKeys); $i++) {
                         ?>
                         <option value="<?php echo $orderStatusesKeys[$i] ?>" <?php echo esc_attr( get_option('linkit_send_picker')) == $orderStatusesKeys[$i] ? 'selected' : '' ?>>
+                            <?php echo $orderStatuses[$orderStatusesKeys[$i]] ?>
+                        </option>
+                        <?php
+                    }
+                    ?>
+                </select>
+            </li>
+            <li>
+                <label for="linkit_ongoing_picker">Picker Stage</label>
+                <select id="linkit_ongoing_picker" name="linkit_ongoing_picker" >
+                    <?php
+                    for ($i = 0; $i < sizeof($orderStatusesKeys); $i++) {
+                        ?>
+                        <option value="<?php echo $orderStatusesKeys[$i] ?>" <?php echo esc_attr( get_option('linkit_ongoing_picker')) == $orderStatusesKeys[$i] ? 'selected' : '' ?>>
                             <?php echo $orderStatuses[$orderStatusesKeys[$i]] ?>
                         </option>
                         <?php
@@ -107,7 +121,7 @@
                 </select>
             </li>
             <li>
-                <label for="send-driver">Driver stage</label>
+                <label for="send-driver">Send To Driver</label>
                 <select id="send-driver" name="linkit_send_driver" >
                     <?php
                     for ($i = 0; $i < sizeof($orderStatusesKeys); $i++) {

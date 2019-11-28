@@ -134,6 +134,8 @@ class Linkitwoocommerce_Admin {
         register_setting('LinkIt', 'linkit_next_step');
         register_setting('LinkIt', 'linkit_next_step_delivery');
         register_setting('LinkIt', 'linkit_barcode_meta');
+        register_setting('LinkIt', 'linkit_ongoing_picker');
+        register_setting('LinkIt', 'linkit_ongoing_driver');
     }
 
     /**
