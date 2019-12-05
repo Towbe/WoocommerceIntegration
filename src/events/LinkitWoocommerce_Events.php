@@ -178,26 +178,35 @@ class LinkitWoocommerce_Events
             2 => $store_destination_2,
         );
 
-        if ($service == 'Picker') {
-            $job->driver_uid = 'uIcwXT3xSRQnAlZclQCvuXNZFA52';
-        } else {
-            $job->driver_uid = 'cGHY0QsFGwMPM5hKVq8vSEJkVLg1';
+        if ($service != 'Picker') {
+            $api_key = get_option('linkit_api_key', "");
+            if ($api_key == "") {
+                error_log('Linkit api key is not set');
+                return null;
+            }
             $stage = $order->get_meta('stage');
-//            if ($stage) {
-//                switch ($job->service) {
-//                    case 'Motorcycle':
-//                        switch ($stage):
-//                            case 0:
-//
-//                        break;
-//                    case 'Truck':
-//
-//                        break;
-//                }
-//            }
+            if ($stage != 0) {
+                $times = wp_remote_post('https://api.towbe.com/v1/timeslots/get-timeslots', array(
+                    'method'=> 'POST',
+                    'timeout'=> 30,
+                    'headers' => array(
+                        "Authorization" => $api_key,
+                        "Cache-Control" => "no-cache",
+                        "Content-Type" => "application/json",
+                    ),
+                    'body' => json_encode(array(
+                        "time"=> $order->get_date_created()->format(DATE_RFC3339),
+                        "vehicle_type"=> "moto",
+                        "number_of_timeslots"=> 4,
+                    ))
+                ));
+                $job->schedule = (new DateTime(json_decode($times['body'])->timeslots[$stage - 1]->time_end))->getTimestamp();
+            }
         }
 
         $id = $job->create();
+
+        error_log($id);
 
         update_post_meta($order_id, 'linkit_job_id', $id);
     }
