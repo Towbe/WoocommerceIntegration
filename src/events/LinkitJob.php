@@ -47,12 +47,15 @@ class LinkitJob
 
         error_log(json_encode($this));
 
-        if ($result instanceof WP_ERROR) {
+        if (is_wp_error($result)) {
             error_log($result->get_error_message());
             return '';
         }
 
-        if ($result !== null) {
+        error_log('wperr');
+        error_log(json_encode($result));
+
+        if ($result != null) {
             return json_decode($result['body'])->id;
         } else {
             return json_encode($result);
