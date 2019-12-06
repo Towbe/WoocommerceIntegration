@@ -83,14 +83,30 @@ class Linkitwoocommerce_Public {
      * @since 1.1.0
      */
     public function register_api() {
+
         register_rest_route('linkit/v1', '/next-step/(?P<id>\d+)', array(
             'methods' => 'GET',
             'callback' => array($this, 'handle_next_step'),
+        ));
+        register_rest_route('linkit/v1', '/picker-viewed/(?P<id>\d+)', array(
+            'methods' => 'GET',
+            'callback' => array($this, 'handle_picker_viewed'),
         ));
         register_rest_route('linkit/v1', '/next-step-delivery/(?P<id>\d+)', array(
             'methods' => 'GET',
             'callback' => array($this, 'handle_next_step_delivery'),
         ));
+    }
+
+    public function  handle_picker_viewed($data){
+        $status = get_option('linkit_ongoing_picker');
+        $order = wc_get_order($data['id']);
+
+        if ( empty($order) ) {
+            return;
+        }
+
+        $order->update_status($status);
     }
 
     /**
