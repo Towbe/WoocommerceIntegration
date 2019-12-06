@@ -136,6 +136,8 @@ class Linkitwoocommerce_Admin {
         register_setting('LinkIt', 'linkit_barcode_meta');
         register_setting('LinkIt', 'linkit_ongoing_picker');
         register_setting('LinkIt', 'linkit_ongoing_driver');
+        register_setting('LinkIt', 'linkit_store_latitude');
+        register_setting('LinkIt', 'linkit_store_longitude');
     }
 
     /**

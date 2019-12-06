@@ -52,6 +52,24 @@
                         value="<?php echo esc_attr( get_option('linkit_longitude_meta')) ?>"
                 />
             </li>
+            <li>
+                <label for="linkit_store_latitude">Store Latitude</label>
+                <input
+                        type="text"
+                        name="linkit_store_latitude"
+                        id="linkit_store_latitude"
+                        value="<?php echo esc_attr( get_option('linkit_store_latitude')) ?>"
+                />
+            </li>
+            <li>
+                <label for="linkit_store_longitude">Store Longitude</label>
+                <input
+                        type="text"
+                        name="linkit_store_longitude"
+                        id="linkit_store_longitude"
+                        value="<?php echo esc_attr( get_option('linkit_store_longitude')) ?>"
+                />
+            </li>
             <h3>LinkIt App Value Mapping</h3>
             <?php
                 $orderStatuses = wc_get_order_statuses();

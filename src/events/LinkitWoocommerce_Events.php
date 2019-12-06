@@ -65,8 +65,8 @@ class LinkitWoocommerce_Events
         $store_destination->extra=array("type" => "pickup");
         $store_destination->location = new LinkitLocation();
         $store_destination->address = get_option("linkit_store_address", "");
-        $store_destination->location->lat = get_option("linkit_store_latitude", 0);
-        $store_destination->location->lng = get_option('linkit_store_longitude', 0);
+        $store_destination->location->lat = floatval(get_option("linkit_store_latitude", 0));
+        $store_destination->location->lng = floatval(get_option('linkit_store_longitude', 0));
         $store_destination->extra = array(
             "hide_map" => true,
         );
@@ -75,8 +75,8 @@ class LinkitWoocommerce_Events
         $store_destination_2->extra=array("type" => "pickup");
         $store_destination_2->location = new LinkitLocation();
         $store_destination_2->address = get_option("linkit_store_address", "");
-        $store_destination_2->location->lat = get_option("linkit_store_latitude", 0);
-        $store_destination_2->location->lng = get_option('linkit_store_longitude', 0);
+        $store_destination_2->location->lat = floatval(get_option("linkit_store_latitude", 0));
+        $store_destination_2->location->lng = floatval(get_option('linkit_store_longitude', 0));
 
         $client_destination = new Destination();
         $client_destination ->extra = array("type" => "dropoff");
@@ -184,7 +184,7 @@ class LinkitWoocommerce_Events
                 error_log('Linkit api key is not set');
                 return null;
             }
-            $stage = $order->get_meta('stage');
+            $stage = $order->get_meta('slot');
             if ($stage != 0) {
                 $times = wp_remote_post('https://api.towbe.com/v1/timeslots/get-timeslots', array(
                     'method'=> 'POST',
