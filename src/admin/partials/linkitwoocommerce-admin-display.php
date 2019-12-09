@@ -154,6 +154,21 @@
             </li>
             <li>
 
+                <label for="linkit_delivery_stage">Delivering Stage</label>
+                <select id="linkit_delivery_stage" name="linkit_delivery_stage" >
+                    <?php
+                    for ($i = 0; $i < sizeof($orderStatusesKeys); $i++) {
+                        ?>
+                        <option value="<?php echo $orderStatusesKeys[$i] ?>" <?php echo esc_attr( get_option('linkit_delivery_stage')) == $orderStatusesKeys[$i] ? 'selected' : '' ?>>
+                            <?php echo $orderStatuses[$orderStatusesKeys[$i]] ?>
+                        </option>
+                        <?php
+                    }
+                    ?>
+                </select>
+            </li>
+            <li>
+
                 <label for="linkit_next_step_delivery">Step After Delivery</label>
                 <select id="linkit_next_step_delivery" name="linkit_next_step_delivery" >
                     <?php

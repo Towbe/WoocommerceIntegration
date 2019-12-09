@@ -132,6 +132,7 @@ class Linkitwoocommerce_Admin {
         register_setting('LinkIt', 'linkit_cancel');
         register_setting('LinkIt', 'linkit_finish');
         register_setting('LinkIt', 'linkit_next_step');
+        register_setting('LinkIt', 'linkit_delivery_stage');
         register_setting('LinkIt', 'linkit_next_step_delivery');
         register_setting('LinkIt', 'linkit_barcode_meta');
         register_setting('LinkIt', 'linkit_ongoing_picker');

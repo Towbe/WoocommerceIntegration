@@ -91,6 +91,10 @@ class Linkitwoocommerce_Public {
             'methods' => 'GET',
             'callback' => array($this, 'handle_picker_viewed'),
         ));
+        register_rest_route('linkit/v1', '/delivery-ongoing/(?P<id>\d+)', array(
+            'methods' => 'GET',
+            'callback' => array($this, 'handle_delivery_stage'),
+        ));
         register_rest_route('linkit/v1', '/next-step-delivery/(?P<id>\d+)', array(
             'methods' => 'GET',
             'callback' => array($this, 'handle_next_step_delivery'),
@@ -131,6 +135,22 @@ class Linkitwoocommerce_Public {
      */
     public function handle_next_step_delivery($data) {
         $finish = get_option('linkit_next_step_delivery');
+        $order = wc_get_order($data['id']);
+
+        if ( empty($order) ) {
+            return;
+        }
+
+        $order->update_status($finish);
+    }
+
+    /**
+     * Hop to the next state of the order as per the configuration
+     *
+     * @since 1.1.0
+     */
+    public function handle_delivery_stage($data) {
+        $finish = get_option('linkit_delivery_stage');
         $order = wc_get_order($data['id']);
 
         if ( empty($order) ) {
